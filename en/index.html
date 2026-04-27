@@ -4562,9 +4562,15 @@
                 // Result display
                 currentResults = calculationResults;  // Set result reference for unit conversion
                 setTimeout(() => {
-                    displayResults(calculationResults);
-                    calculateBtn.classList.remove('loading');
-                    calculateBtn.innerHTML = '🔍 Calculate Life';
+                    try {
+                        displayResults(calculationResults);
+                    } catch (err) {
+                        console.error('Display error:', err);
+                        alert('An error occurred while rendering results. Check the console for details.');
+                    } finally {
+                        calculateBtn.classList.remove('loading');
+                        calculateBtn.innerHTML = '🔍 Calculate Life';
+                    }
                 }, 500);
                 
             } catch (error) {
@@ -4695,7 +4701,7 @@
             // High-speed operation warning (limit speed exceeded check) - v11.1 added + lubrication correction
             const limitSpeed = parseFloat(document.getElementById('limitSpeed').value);
             if (limitSpeed > 0) {
-                const maxSpeed = Math.max(...loadConditions.map(c => c.n));
+                const maxSpeed = Math.max(...results.loadConditions.map(c => c.n));
                 
                 // Limit speed correction factor by lubrication type
                 const lubricationFactor = results.lubType === 'grease' ? 0.7 : 1.0; // Grease is 70%

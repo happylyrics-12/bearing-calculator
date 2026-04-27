@@ -4572,9 +4572,15 @@
                 // 결과 표시
                 currentResults = calculationResults;  // 단위 변환용 결과 참조 설정
                 setTimeout(() => {
-                    displayResults(calculationResults);
-                    calculateBtn.classList.remove('loading');
-                    calculateBtn.innerHTML = '🔍 수명 계산하기';
+                    try {
+                        displayResults(calculationResults);
+                    } catch (err) {
+                        console.error('결과 표시 오류:', err);
+                        alert('결과 표시 중 오류가 발생했습니다. 콘솔에서 상세 메시지를 확인하세요.');
+                    } finally {
+                        calculateBtn.classList.remove('loading');
+                        calculateBtn.innerHTML = '🔍 수명 계산하기';
+                    }
                 }, 500);
                 
             } catch (error) {
@@ -4705,7 +4711,7 @@
             // 고속 운전 경고 (한계속도 초과 검사) - v11.1 추가 + 윤활 보정
             const limitSpeed = parseFloat(document.getElementById('limitSpeed').value);
             if (limitSpeed > 0) {
-                const maxSpeed = Math.max(...loadConditions.map(c => c.n));
+                const maxSpeed = Math.max(...results.loadConditions.map(c => c.n));
                 
                 // 윤활 타입별 한계속도 보정계수
                 const lubricationFactor = results.lubType === 'grease' ? 0.7 : 1.0; // 그리스는 70%
